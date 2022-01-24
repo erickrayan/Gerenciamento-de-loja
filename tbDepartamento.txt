@@ -1,0 +1,4 @@
+0001|Doces
+0002|Cama, mesa e banho
+0003|Laticínios
+0004|Açougue
