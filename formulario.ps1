@@ -2,9 +2,9 @@
 Add-Type -AssemblyName System.Windows.forms
 Add-Type -Assemblyname System.Drawing
 
-#Janela grafica
+#Janela gráfica
 $form1 = New-Object System.Windows.Forms.Form
-$form1.text = "Formulário"
+$form1.text = "Inserção de loja"
 $Form1.size = New-Object System.Drawing.Size(350,200)
 
 #Caixa de texto
@@ -21,10 +21,10 @@ $label.AutoSize = $true
 $form1.Controls.Add($label)
 
 #Label sucesso
-$msgSucesso = New-Object System.Windows.Forms.label
-$msgSucesso.Location =  New-Object System.Drawing.Size(20,130)
-$msgSucesso.AutoSize = $true
-$form1.Controls.Add($msgSucesso)
+$MsgBottom = New-Object System.Windows.Forms.label
+$MsgBottom.Location =  New-Object System.Drawing.Size(20,130)
+$MsgBottom.AutoSize = $true
+$form1.Controls.Add($MsgBottom)
 
 #idLoja
 $idLoja = New-Object System.Windows.Forms.label
@@ -34,29 +34,29 @@ $form1.Controls.Add($idLoja)
 
 
 #botoes
-$canc = New-Object System.Windows.Forms.Button #botao cancelar
+$canc = New-Object System.Windows.Forms.Button #botão cancelar
 $canc.Location = New-Object System.Drawing.Size(130,90)
 $canc.Size = New-Object System.Drawing.Size(100,20)
-$canc.Text = "Cancelar"
-$canc.Add_Click({$form1.Tag = $form1.close()}) #fecha a janela grafica
+$canc.Text = "Fechar"
+$canc.Add_Click({$form1.Tag = $form1.close()}) #fecha a janela gráfica
 $form1.Controls.Add($canc)
 
-$ok = New-Object System.Windows.Forms.Button #botao ok
+$ok = New-Object System.Windows.Forms.Button #botão ok
 $ok.Location = New-Object System.Drawing.Size(20,90)
 $ok.Size = New-Object System.Drawing.Size(100,20)
 $ok.Text = "Ok"
-$ok.Add_click({ #essa parte Ã¯Â¿Â½ executada ao clicar no botao ok
-    $ultimo=Get-Content .\ixTbLoja.txt #variÃ¯Â¿Â½vel recebe conteÃ¯Â¿Â½do do texto
+$ok.Add_click({ #essa parte é executada ao clicar no botão ok
+    $ultimo=Get-Content .\ixTbLoja.txt #variável recebe conteúdo do texto
     $texto=$caixa1.text
     Add-Content -Value "$ultimo|$texto" -Path .\tbLoja.txt #nova linha adicionada no arquivo
 
-    [int]$ultimo=$ultimo #variÃ¯Â¿Â½vel Ã¯Â¿Â½ convertida para int
-    $ultimo++ #e Ã¯Â¿Â½ incrementada
-    [string]$ultimo=([string]$ultimo).PadLeft(4,'0') #variÃ¯Â¿Â½vel volta a ser string padronizada com zeros Ã¯Â¿Â½ esquerda
+    [int]$ultimo=$ultimo #variável é convertida para int
+    $ultimo++ #e é incrementada
+    [string]$ultimo=([string]$ultimo).PadLeft(4,'0') #variável volta a ser string padronizada com zeros à esquerda
     Clear-Content -Path .\ixTbLoja.txt 
     Add-Content -Value $ultimo -Path .\ixTbLoja.txt 
     $idLoja.Text = "codLoja: " + $ultimo + ":"
-    $msgSucesso.Text = "Loja inserida com sucesso."
+    $MsgBottom.Text = "Loja $texto inserida."
     
     
 })
@@ -68,7 +68,7 @@ $idLoja.Text = "codLoja: " + (Get-Content .\ixTbLoja.txt) + ":"
 
 
 
-$form1.ShowDialog()#mostra a janela grafica na tela
+$form1.ShowDialog()#mostra a janela gráfica na tela
 
 
 
