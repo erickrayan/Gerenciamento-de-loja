@@ -1,4 +1,3 @@
-0001|Doces
-0002|Cama, mesa e banho
-0003|Laticínios
-0004|Açougue
+0001|Cama, mesa e banho
+0002|Frios
+0003|Brinquedos

@@ -79,19 +79,23 @@ $ok.Location = New-Object System.Drawing.Size(20,90)
 $ok.Size = New-Object System.Drawing.Size(100,20)
 $ok.Text = "Ok"
 $ok.Add_click({ #essa parte é executada ao clicar no botão ok
-    $ultimo=Get-Content .\ixTbLoja.txt #variável recebe conteúdo do texto
-    $texto=$caixa1.text
-    Add-Content -Value "$ultimo|$texto" -Path .\tbLoja.txt #nova linha adicionada no arquivo
+    if($caixa1.text -eq ""){
+        $MsgBottom.Text = "Loja não adicionada, caixa de texto vazia"
+    }
+    else{
+        $ultimo=Get-Content .\ixTbLoja.txt #variável recebe conteúdo do texto
+        $texto=$caixa1.text
+        Add-Content -Value "$ultimo|$texto" -Path .\tbLoja.txt #nova linha adicionada no arquivo
 
-    [int]$ultimo=$ultimo #variável é convertida para int
-    $ultimo++ #e é incrementada
-    [string]$ultimo=([string]$ultimo).PadLeft(4,'0') #variável volta a ser string padronizada com zeros à esquerda
-    Clear-Content -Path .\ixTbLoja.txt 
-    Add-Content -Value $ultimo -Path .\ixTbLoja.txt 
-    $idLoja.Text = "codLoja: " + $ultimo + ":"
-    $MsgBottom.Text = "Loja $texto inserida."
-    
-    
+        [int]$ultimo=$ultimo #variável é convertida para int
+        $ultimo++ #e é incrementada
+        [string]$ultimo=([string]$ultimo).PadLeft(4,'0') #variável volta a ser string padronizada com zeros à esquerda
+        Clear-Content -Path .\ixTbLoja.txt 
+        Add-Content -Value $ultimo -Path .\ixTbLoja.txt 
+        $idLoja.Text = "codLoja: " + $ultimo + ":"
+        $MsgBottom.Text = "Loja $texto inserida."
+    }
+
 })
 $form1.Controls.Add($ok)
 
@@ -101,17 +105,22 @@ $dok.Location = New-Object System.Drawing.Size(20,90)
 $dok.Size = New-Object System.Drawing.Size(100,20)
 $dok.Text = "Ok"
 $dok.Add_click({ #essa parte é executada ao clicar no botão ok
-    $dultimo=Get-Content .\ixTbDepartamento.txt #variável recebe conteúdo do texto
-    $dtexto=$dcaixa1.text
-    Add-Content -Value "$dultimo|$dtexto" -Path .\tbDepartamento.txt #nova linha adicionada no arquivo
+    if($dcaixa1.text -eq ""){
+        $dMsgBottom.Text = "Departamento não adicionado, caixa de texto vazia"
+    }
+    else{
+        $dultimo=Get-Content .\ixTbDepartamento.txt #variável recebe conteúdo do texto
+        $dtexto=$dcaixa1.text
+        Add-Content -Value "$dultimo|$dtexto" -Path .\tbDepartamento.txt #nova linha adicionada no arquivo
 
-    [int]$dultimo=$dultimo #variável é convertida para int
-    $dultimo++ #e é incrementada
-    [string]$dultimo=([string]$dultimo).PadLeft(4,'0') #variável volta a ser string padronizada com zeros à esquerda
-    Clear-Content -Path .\ixTbDepartamento.txt 
-    Add-Content -Value $dultimo -Path .\ixTbDepartamento.txt 
-    $idDepartamento.Text = "codDpt: " + $dultimo + ":"
-    $dMsgBottom.Text = "Departamento $dtexto inserido."
+        [int]$dultimo=$dultimo #variável é convertida para int
+        $dultimo++ #e é incrementada
+        [string]$dultimo=([string]$dultimo).PadLeft(4,'0') #variável volta a ser string padronizada com zeros à esquerda
+        Clear-Content -Path .\ixTbDepartamento.txt 
+        Add-Content -Value $dultimo -Path .\ixTbDepartamento.txt 
+        $idDepartamento.Text = "codDpt: " + $dultimo + ":"
+        $dMsgBottom.Text = "Departamento $dtexto inserido."
+    }
 })
 $form2.Controls.Add($dok)
 
@@ -122,7 +131,7 @@ $idDepartamento.Text = "codDpt: " + (Get-Content .\ixTbDepartamento.txt) + ":"
 
 
 
-$interruptor=0
+
 $form1.ShowDialog()#mostra a janela gráfica na tela
 $form2.ShowDialog()
 
