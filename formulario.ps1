@@ -2,19 +2,85 @@
 Add-Type -AssemblyName System.Windows.forms
 Add-Type -Assemblyname System.Drawing
 
-#Janela gráfica
+#menu
+#Janela principal menu
+$menu = New-Object System.Windows.Forms.Form
+$menu.text = "Relacionamento loja/departamento"
+#$menu.size = New-Object System.Drawing.Size(350,200)
+$menu.size = New-Object System.Drawing.Size(750,600)
+$menu.StartPosition = "CenterScreen"
+
+#listbox do menu
+$menulb = New-Object System.Windows.Forms.Listbox
+$menulb.Location = New-Object System.Drawing.Size(10,200)
+$menulb.Size = New-Object System.Drawing.Size(260,20)
+$menulb.Height = 80
+$menu.Controls.Add($menulb)
+
+#Label menu
+$mlabel = New-Object System.Windows.Forms.label
+$mlabel.Text = "Menu principal"
+$mlabel.Location =  New-Object System.Drawing.Size(20,15)
+$mlabel.AutoSize = $true
+$menu.Controls.Add($mlabel)
+
+#botão inserir loja do menu
+$inserirLoja = New-Object System.Windows.Forms.Button 
+$inserirLoja.Location = New-Object System.Drawing.Size(20,90)
+$inserirLoja.Size = New-Object System.Drawing.Size(130,20)
+$inserirLoja.Text = "Inserir loja"
+$inserirLoja.Add_click({
+    $form1.ShowDialog()
+   
+})
+$menu.Controls.Add($inserirLoja)
+
+#botão inserir departamento do menu
+$inserirDepartamento = New-Object System.Windows.Forms.Button #botão ok
+$inserirDepartamento.Location = New-Object System.Drawing.Size(180,90)
+$inserirDepartamento.Size = New-Object System.Drawing.Size(130,20)
+$inserirDepartamento.Text = "Inserir departamento"
+$inserirDepartamento.Add_click({
+    $form2.ShowDialog()  
+})
+$menu.Controls.Add($inserirDepartamento)
+
+#Label lojas do menu
+$LabelLojas = New-Object System.Windows.Forms.label
+$LabelLojas.Text = "Lojas"
+$LabelLojas.Location =  New-Object System.Drawing.Size(9,180)
+$LabelLojas.AutoSize = $true
+$menu.Controls.Add($LabelLojas)
+
+#botão mostrar departamentos
+$botaoMostrarDepartamentos = New-Object System.Windows.Forms.Button 
+$botaoMostrarDepartamentos.Location = New-Object System.Drawing.Size(290,200)
+$botaoMostrarDepartamentos.Size = New-Object System.Drawing.Size(130,20)
+$botaoMostrarDepartamentos.Text = "Mostrar departamentos"
+$botaoMostrarDepartamentos.Add_click({
+    if ($menulb.SelectedIndex -ne -1){
+        $selecao=$menulb.SelectedIndex + 1
+        $mlabel.Text = "Selecionado $selecao"
+    }
+    else {
+        $mlabel.Text = "Não selecionado"
+    }
+    
+})
+$menu.Controls.Add($botaoMostrarDepartamentos)
+
+#Janela Inserção de loja
 $form1 = New-Object System.Windows.Forms.Form
 $form1.text = "Inserção de loja"
 $Form1.size = New-Object System.Drawing.Size(350,200)
-#Janela gráfica
+$Form1.StartPosition = "CenterScreen"
+
+#Janela Inserção de departamento
 $form2 = New-Object System.Windows.Forms.Form
 $form2.text = "Inserção de departamento"
 $Form2.size = New-Object System.Drawing.Size(350,200)
+$Form2.StartPosition = "CenterScreen"
 
-#Janela gráfica
-$menu = New-Object System.Windows.Forms.Form
-$menu.text = "Menu principal"
-$menu.size = New-Object System.Drawing.Size(350,200)
 
 #Caixa de texto
 $caixa1 = New-Object System.Windows.Forms.TextBox
@@ -41,12 +107,7 @@ $dlabel.Location =  New-Object System.Drawing.Size(20,15)
 $dlabel.AutoSize = $true
 $form2.Controls.Add($dlabel)
 
-#Label menu
-$mlabel = New-Object System.Windows.Forms.label
-$mlabel.Text = "Este é o menu principal"
-$mlabel.Location =  New-Object System.Drawing.Size(20,15)
-$mlabel.AutoSize = $true
-$menu.Controls.Add($mlabel)
+
 
 #Mensagem parte inferior loja
 $MsgBottom = New-Object System.Windows.Forms.label
@@ -141,25 +202,7 @@ $dok.Add_click({ #essa parte é executada ao clicar no botão ok
 })
 $form2.Controls.Add($dok)
 
-#botão inserir loja
-$inserirLoja = New-Object System.Windows.Forms.Button 
-$inserirLoja.Location = New-Object System.Drawing.Size(20,90)
-$inserirLoja.Size = New-Object System.Drawing.Size(130,20)
-$inserirLoja.Text = "Inserir loja"
-$inserirLoja.Add_click({
-    $form1.ShowDialog()
-})
-$menu.Controls.Add($inserirLoja)
 
-#botão inserir departamento
-$inserirDepartamento = New-Object System.Windows.Forms.Button #botão ok
-$inserirDepartamento.Location = New-Object System.Drawing.Size(180,90)
-$inserirDepartamento.Size = New-Object System.Drawing.Size(130,20)
-$inserirDepartamento.Text = "Inserir departamento"
-$inserirDepartamento.Add_click({
-    $form2.ShowDialog()  
-})
-$menu.Controls.Add($inserirDepartamento)
 
 
 
@@ -168,15 +211,18 @@ $menu.Controls.Add($inserirDepartamento)
 #Início do programa
 #
 #
-$idLoja.Text = "codLoja: " + (Get-Content .\ixTbLoja.txt) + ":"
-$idDepartamento.Text = "codDpt: " + (Get-Content .\ixTbDepartamento.txt) + ":"
+$idLoja.Text = "codLoja: " + (Get-Content .\ixTbLoja.txt) + ":" #preenche o label
+$idDepartamento.Text = "codDpt: " + (Get-Content .\ixTbDepartamento.txt) + ":" #preenche o label
+foreach ($linha in Get-Content .\tbLoja.txt){ $menulb.Items.Add(($linha -split "\|")[1]) } #preenche a listbox
+
+
 
 $menu.ShowDialog()
 
 
 
 
-
+#$mlabel.Text =$menulb.SelectedIndex
 #$form1.ShowDialog()#mostra a janela gráfica na tela
 #$form2.ShowDialog()
 #$idLoja.Text ="codLoja: " + ((Get-Content .\tbLoja.txt -Tail 1) -split "\|")[0]
