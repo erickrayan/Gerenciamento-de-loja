@@ -11,18 +11,26 @@ $menu.size = New-Object System.Drawing.Size(750,600)
 $menu.StartPosition = "CenterScreen"
 
 #listbox do menu
-$menulb = New-Object System.Windows.Forms.Listbox
-$menulb.Location = New-Object System.Drawing.Size(10,200)
-$menulb.Size = New-Object System.Drawing.Size(260,20)
-$menulb.Height = 80
-$menu.Controls.Add($menulb)
+$listBoxLojas = New-Object System.Windows.Forms.Listbox
+$listBoxLojas.Location = New-Object System.Drawing.Size(10,200)
+$listBoxLojas.Size = New-Object System.Drawing.Size(260,20)
+$listBoxLojas.Height = 80
+$menu.Controls.Add($listBoxLojas)
+
+#listbox de saída do menu
+$listBoxSaida = New-Object System.Windows.Forms.Listbox
+$listBoxSaida.Location = New-Object System.Drawing.Size(10,350)
+$listBoxSaida.Size = New-Object System.Drawing.Size(260,20)
+$listBoxSaida.Height = 80
+$menu.Controls.Add($listBoxSaida)
+
 
 #Label menu
-$mlabel = New-Object System.Windows.Forms.label
-$mlabel.Text = "Menu principal"
-$mlabel.Location =  New-Object System.Drawing.Size(20,15)
-$mlabel.AutoSize = $true
-$menu.Controls.Add($mlabel)
+$mLabel = New-Object System.Windows.Forms.label
+$mLabel.Text = "Menu principal"
+$mLabel.Location =  New-Object System.Drawing.Size(20,15)
+$mLabel.AutoSize = $true
+$menu.Controls.Add($mLabel)
 
 #botão inserir loja do menu
 $inserirLoja = New-Object System.Windows.Forms.Button 
@@ -52,19 +60,32 @@ $LabelLojas.Location =  New-Object System.Drawing.Size(9,180)
 $LabelLojas.AutoSize = $true
 $menu.Controls.Add($LabelLojas)
 
+#Label departamentos do menu
+$LabelDepartamentos = New-Object System.Windows.Forms.label
+$LabelDepartamentos.Text = "Departamentos"
+$LabelDepartamentos.Location =  New-Object System.Drawing.Size(9,330)
+$LabelDepartamentos.AutoSize = $true
+$menu.Controls.Add($LabelDepartamentos)
+
 #botão mostrar departamentos
 $botaoMostrarDepartamentos = New-Object System.Windows.Forms.Button 
 $botaoMostrarDepartamentos.Location = New-Object System.Drawing.Size(290,200)
 $botaoMostrarDepartamentos.Size = New-Object System.Drawing.Size(130,20)
 $botaoMostrarDepartamentos.Text = "Mostrar departamentos"
 $botaoMostrarDepartamentos.Add_click({
-    if ($menulb.SelectedIndex -ne -1){
-        $selecao=$menulb.SelectedIndex + 1
-        $mlabel.Text = "Selecionado $selecao"
-    }
-    else {
-        $mlabel.Text = "Não selecionado"
-    }
+
+
+
+    
+
+    
+    #if ($listBoxLojas.SelectedIndex -ne -1){
+    #    $selecao=$listBoxLojas.SelectedIndex + 1
+    #    $mLabel.Text = "Selecionado $selecao"
+    #}
+    #else {
+    #    $mLabel.Text = "Não selecionado"
+    #}
     
 })
 $menu.Controls.Add($botaoMostrarDepartamentos)
@@ -213,16 +234,38 @@ $form2.Controls.Add($dok)
 #
 $idLoja.Text = "codLoja: " + (Get-Content .\ixTbLoja.txt) + ":" #preenche o label
 $idDepartamento.Text = "codDpt: " + (Get-Content .\ixTbDepartamento.txt) + ":" #preenche o label
-foreach ($linha in Get-Content .\tbLoja.txt){ $menulb.Items.Add(($linha -split "\|")[1]) } #preenche a listbox
+foreach ($linha in Get-Content .\tbLoja.txt){ [void]$listBoxLojas.Items.Add($linha) } #preenche a listbox
 
 
 
-$menu.ShowDialog()
+$listBoxLojas.add_SelectedIndexChanged({ #Essa parte é executada quando o usuário clica em uma loja
+    $sel=$listBoxLojas.SelectedIndex
+    $mLabel.Text = "index $sel"
+
+    $listBoxSaida.items.Clear()
+
+
+    foreach ($dpt in Get-Content .\tbDepartamento.txt){
+
+        $listBoxSaida.items.add($dpt)
+
+        foreach ($rel in Get-Content .\relacionamentos.txt){
+            if( ( (($dpt -split "\|")[0]) -eq (($rel -split "\|")[1]) ) -and ( (($rel -split "\|")[0]) -eq (($listBoxLojas.SelectedItem -split "\|")[0]) ) ){
+                $listBoxSaida.items.remove($dpt)
+            }
+        }
+    }
+
+
+    #$listBoxSaida.items.add(($listBoxLojas.text -split "\|")[1])
+    
+})
+[void]$menu.ShowDialog()
 
 
 
 
-#$mlabel.Text =$menulb.SelectedIndex
+#$mLabel.Text =$listBoxLojas.SelectedIndex
 #$form1.ShowDialog()#mostra a janela gráfica na tela
 #$form2.ShowDialog()
 #$idLoja.Text ="codLoja: " + ((Get-Content .\tbLoja.txt -Tail 1) -split "\|")[0]
