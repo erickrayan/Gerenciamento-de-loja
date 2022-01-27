@@ -10,3 +10,10 @@
 0010|hfgh
 0011|gdg
 0012|Gelo seco
+0013|nova iguaçu
+0014|mesquita
+0015|mesquita
+0016|mesquitas
+0017|Nilópolis
+0018|Campinas
+0019|Zona Sul

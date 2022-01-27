@@ -6,3 +6,6 @@
 0006|gsdfgsdfg
 0007|sdfgsdfg
 0008|sup
+0009|doces
+0010|Esportes
+0011|Bicicleta
