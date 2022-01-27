@@ -36,7 +36,7 @@ $menu.Controls.Add($mLabel)
 $inserirLoja = New-Object System.Windows.Forms.Button 
 $inserirLoja.Location = New-Object System.Drawing.Size(20,90)
 $inserirLoja.Size = New-Object System.Drawing.Size(130,20)
-$inserirLoja.Text = "Inserir loja"
+$inserirLoja.Text = "Criar loja"
 $inserirLoja.Add_click({
     $form1.ShowDialog()
    
@@ -47,7 +47,7 @@ $menu.Controls.Add($inserirLoja)
 $inserirDepartamento = New-Object System.Windows.Forms.Button #botão ok
 $inserirDepartamento.Location = New-Object System.Drawing.Size(180,90)
 $inserirDepartamento.Size = New-Object System.Drawing.Size(130,20)
-$inserirDepartamento.Text = "Inserir departamento"
+$inserirDepartamento.Text = "Criar departamento"
 $inserirDepartamento.Add_click({
     $form2.ShowDialog()  
 })
@@ -67,18 +67,24 @@ $LabelDepartamentos.Location =  New-Object System.Drawing.Size(9,330)
 $LabelDepartamentos.AutoSize = $true
 $menu.Controls.Add($LabelDepartamentos)
 
-#botão mostrar departamentos
-$botaoMostrarDepartamentos = New-Object System.Windows.Forms.Button 
-$botaoMostrarDepartamentos.Location = New-Object System.Drawing.Size(290,200)
-$botaoMostrarDepartamentos.Size = New-Object System.Drawing.Size(130,20)
-$botaoMostrarDepartamentos.Text = "Mostrar departamentos"
-$botaoMostrarDepartamentos.Add_click({
+#botão Associar departamentos
+$botaoAssociarDepartamento = New-Object System.Windows.Forms.Button 
+$botaoAssociarDepartamento.Location = New-Object System.Drawing.Size(290,200)
+$botaoAssociarDepartamento.Size = New-Object System.Drawing.Size(130,20)
+$botaoAssociarDepartamento.Text = "Associar departamento"
+$botaoAssociarDepartamento.Add_click({
+
+    #$novaLinha= $listBoxLojas.SelectedItem -split "\|")[0] + $listBoxSaida.SelectedItem -split "\|")[0]
+
 
 
 
     
-
     
+
+
+
+
     #if ($listBoxLojas.SelectedIndex -ne -1){
     #    $selecao=$listBoxLojas.SelectedIndex + 1
     #    $mLabel.Text = "Selecionado $selecao"
@@ -88,7 +94,19 @@ $botaoMostrarDepartamentos.Add_click({
     #}
     
 })
-$menu.Controls.Add($botaoMostrarDepartamentos)
+$menu.Controls.Add($botaoAssociarDepartamento)
+
+#botão relacionar
+$botaoRelacionar = New-Object System.Windows.Forms.Button 
+$botaoRelacionar.Location = New-Object System.Drawing.Size(290,350)
+$botaoRelacionar.Size = New-Object System.Drawing.Size(130,20)
+$botaoRelacionar.Text = "Criar relacionamento"
+$botaoRelacionar.Add_click({
+
+
+
+})
+$menu.Controls.Add($botaoRelacionar)
 
 #Janela Inserção de loja
 $form1 = New-Object System.Windows.Forms.Form
@@ -116,14 +134,14 @@ $form2.Controls.Add($dcaixa1) #adiciona a caixa de texto na janela grafica
 
 #Label loja
 $label = New-Object System.Windows.Forms.label
-$label.Text = "Digite o nome da loja a ser inserida:"
+$label.Text = "Digite o nome da loja a ser criada:"
 $label.Location =  New-Object System.Drawing.Size(20,15)
 $label.AutoSize = $true
 $form1.Controls.Add($label)
 
 #Label departamento
 $dlabel = New-Object System.Windows.Forms.label
-$dlabel.Text = "Digite o nome do departamento a ser inserido:"
+$dlabel.Text = "Digite o nome do departamento a ser criado:"
 $dlabel.Location =  New-Object System.Drawing.Size(20,15)
 $dlabel.AutoSize = $true
 $form2.Controls.Add($dlabel)
@@ -239,8 +257,8 @@ foreach ($linha in Get-Content .\tbLoja.txt){ [void]$listBoxLojas.Items.Add($lin
 
 
 $listBoxLojas.add_SelectedIndexChanged({ #Essa parte é executada quando o usuário clica em uma loja
-    $sel=$listBoxLojas.SelectedIndex
-    $mLabel.Text = "index $sel"
+    #$sel=$listBoxLojas.SelectedIndex
+    #$mLabel.Text = "index $sel"
 
     $listBoxSaida.items.Clear()
 
@@ -260,6 +278,11 @@ $listBoxLojas.add_SelectedIndexChanged({ #Essa parte é executada quando o usuári
     #$listBoxSaida.items.add(($listBoxLojas.text -split "\|")[1])
     
 })
+
+if($null -eq $listboxsaida.SelectedItem){
+    $mLabel.Text = "sim"
+}
+
 [void]$menu.ShowDialog()
 
 
