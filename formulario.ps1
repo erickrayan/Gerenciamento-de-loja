@@ -26,7 +26,7 @@ $listBoxSaida.Height = 80
 $menu.Controls.Add($listBoxSaida)
 
 #Label menu
-$mLabel = New-Object System.Windows.Forms.label
+$mLabel = New-Object System.Windows.Forms.Label
 $mLabel.Text = "Menu principal"
 $mLabel.Location =  New-Object System.Drawing.Size(20,15)
 $mLabel.AutoSize = $true
@@ -38,12 +38,12 @@ $inserirLoja.Location = New-Object System.Drawing.Size(20,90)
 $inserirLoja.Size = New-Object System.Drawing.Size(130,20)
 $inserirLoja.Text = "Criar loja"
 $inserirLoja.Add_click({
-    $caixa1.Text=""
+    $textboxLoja.Text=""
     $result=$formLoja.ShowDialog()
     if($result -eq "Cancel"){
         popularLojas
     }
-    $msgBottom.Text= ""
+    $msgBottomLoja.Text= ""
     
     
 })
@@ -103,7 +103,7 @@ $botaoTeste.Add_click({
 })
 #$menu.Controls.Add($botaoTeste)
 
-#botão relacionar
+#botão Criar relacionamento
 $botaoRelacionar = New-Object System.Windows.Forms.Button 
 $botaoRelacionar.Location = New-Object System.Drawing.Size(290,350)
 $botaoRelacionar.Size = New-Object System.Drawing.Size(130,20)
@@ -127,83 +127,120 @@ $botaoRelacionar.Add_click({
 })
 $menu.Controls.Add($botaoRelacionar)
 
+#Loja ######################################################################################################################
 #Janela Inserção de loja
 $formLoja = New-Object System.Windows.Forms.Form
 $formLoja.text = "Inserção de loja"
 $formLoja.size = New-Object System.Drawing.Size(350,200)
 $formLoja.StartPosition = "CenterScreen"
 
+#Caixa de texto loja
+$textboxLoja = New-Object System.Windows.Forms.TextBox
+$textboxLoja.Location = New-Object System.Drawing.Size(100,50)
+$textboxLoja.Size = New-Object System.Drawing.Size(208,20)
+$formLoja.Controls.Add($textboxLoja) 
+
+#Label loja
+$labelLoja = New-Object System.Windows.Forms.Label
+$labelLoja.Text = "Digite o nome da loja a ser criada:"
+$labelLoja.Location =  New-Object System.Drawing.Size(20,15)
+$labelLoja.AutoSize = $true
+$formLoja.Controls.Add($labelLoja)
+
+#Mensagem parte inferior loja
+$msgBottomLoja = New-Object System.Windows.Forms.Label
+$msgBottomLoja.Location =  New-Object System.Drawing.Size(20,130)
+$msgBottomLoja.AutoSize = $true
+$formLoja.Controls.Add($msgBottomLoja)
+
+#label idLoja
+$labelIdLoja = New-Object System.Windows.Forms.Label
+$labelIdLoja.Location =  New-Object System.Drawing.Size(23,52)
+$labelIdLoja.AutoSize = $true
+$formLoja.Controls.Add($labelIdLoja)
+
+#botão cancelar loja
+$botaoCancelarLoja = New-Object System.Windows.Forms.Button 
+$botaoCancelarLoja.Location = New-Object System.Drawing.Size(130,90)
+$botaoCancelarLoja.Size = New-Object System.Drawing.Size(100,20)
+$botaoCancelarLoja.Text = "Fechar"
+$botaoCancelarLoja.Add_Click({$formLoja.Tag = $formLoja.close()}) 
+$formLoja.Controls.Add($botaoCancelarLoja)
+
+#botão ok loja
+$botaoOkLoja = New-Object System.Windows.Forms.Button 
+$botaoOkLoja.Location = New-Object System.Drawing.Size(20,90)
+$botaoOkLoja.Size = New-Object System.Drawing.Size(100,20)
+$botaoOkLoja.Text = "Ok"
+$botaoOkLoja.Add_click({ #essa parte é executada ao clicar no botão ok
+    if($textboxLoja.text -eq ""){
+        $msgBottomLoja.Text = "Loja não adicionada, caixa de texto vazia"
+    }
+    else{
+        $cont=0
+        foreach ($linha in Get-Content .\tbLoja.txt){ #verifica se já existe algum com o mesmo nome
+            if(($linha -split "\|")[1] -eq $textboxLoja.text){
+                $cont++
+                break
+            }
+
+        }
+        if($cont -eq 0){
+            $ultimo=Get-Content .\ixTbLoja.txt #variável recebe conteúdo do texto
+            $texto=$textboxLoja.text
+            Add-Content -Value "$ultimo|$texto" -Path .\tbLoja.txt #nova linha adicionada no arquivo
+
+            [int]$ultimo=$ultimo #variável é convertida para int
+            $ultimo++ #e é incrementada
+            [string]$ultimo=([string]$ultimo).PadLeft(4,'0') #variável volta a ser string padronizada com zeros à esquerda
+            Clear-Content -Path .\ixTbLoja.txt 
+            Add-Content -Value $ultimo -Path .\ixTbLoja.txt 
+            $labelIdLoja.Text = "codLoja: " + $ultimo + ":"
+            $msgBottomLoja.Text = "Loja $texto inserida."
+            $textboxLoja.text= ""
+        }
+        else{
+            $msgBottomLoja.Text = "Loja já existente"
+        }
+        
+    }
+
+})
+$formLoja.Controls.Add($botaoOkLoja)
+
+
+
+# Departamento ############################################################################################################
 #Janela Inserção de departamento
 $formDepartamento = New-Object System.Windows.Forms.Form
 $formDepartamento.text = "Inserção de departamento"
 $formDepartamento.size = New-Object System.Drawing.Size(350,200)
 $formDepartamento.StartPosition = "CenterScreen"
 
-#Janela Inserção de produto
-$formProduto = New-Object System.Windows.Forms.Form
-$formProduto.text = "Inserção de produto"
-$formProduto.size = New-Object System.Drawing.Size(350,200)
-$formProduto.StartPosition = "CenterScreen"
-
-
-#Caixa de texto
-$caixa1 = New-Object System.Windows.Forms.TextBox
-$caixa1.Location = New-Object System.Drawing.Size(100,50)
-$caixa1.Size = New-Object System.Drawing.Size(208,20)
-$formLoja.Controls.Add($caixa1) #adiciona a caixa de texto na janela grafica
-#Caixa de texto
+#Caixa de texto departamento
 $dCaixa1 = New-Object System.Windows.Forms.TextBox
 $dCaixa1.Location = New-Object System.Drawing.Size(100,50)
 $dCaixa1.Size = New-Object System.Drawing.Size(208,20)
-$formDepartamento.Controls.Add($dCaixa1) #adiciona a caixa de texto na janela grafica
-
-#Label loja
-$label = New-Object System.Windows.Forms.label
-$label.Text = "Digite o nome da loja a ser criada:"
-$label.Location =  New-Object System.Drawing.Size(20,15)
-$label.AutoSize = $true
-$formLoja.Controls.Add($label)
+$formDepartamento.Controls.Add($dCaixa1) 
 
 #Label departamento
-$dlabel = New-Object System.Windows.Forms.label
+$dlabel = New-Object System.Windows.Forms.Label
 $dlabel.Text = "Digite o nome do departamento a ser criado:"
 $dlabel.Location =  New-Object System.Drawing.Size(20,15)
 $dlabel.AutoSize = $true
 $formDepartamento.Controls.Add($dlabel)
 
-
-
-#Mensagem parte inferior loja
-$msgBottom = New-Object System.Windows.Forms.label
-$msgBottom.Location =  New-Object System.Drawing.Size(20,130)
-$msgBottom.AutoSize = $true
-$formLoja.Controls.Add($msgBottom)
-
 #Mensagem parte inferior departamento
-$dMsgBottom = New-Object System.Windows.Forms.label
+$dMsgBottom = New-Object System.Windows.Forms.Label
 $dMsgBottom.Location =  New-Object System.Drawing.Size(20,130)
 $dMsgBottom.AutoSize = $true
 $formDepartamento.Controls.Add($dMsgBottom)
 
-#idLoja label
-$idLoja = New-Object System.Windows.Forms.label
-$idLoja.Location =  New-Object System.Drawing.Size(23,52)
-$idLoja.AutoSize = $true
-$formLoja.Controls.Add($idLoja)
-#idDepartamento label
-$idDepartamento = New-Object System.Windows.Forms.label
+#idDepartamento labelLoja
+$idDepartamento = New-Object System.Windows.Forms.Label
 $idDepartamento.Location =  New-Object System.Drawing.Size(23,52)
 $idDepartamento.AutoSize = $true
 $formDepartamento.Controls.Add($idDepartamento)
-
-
-#botão cancelar loja
-$canc = New-Object System.Windows.Forms.Button 
-$canc.Location = New-Object System.Drawing.Size(130,90)
-$canc.Size = New-Object System.Drawing.Size(100,20)
-$canc.Text = "Fechar"
-$canc.Add_Click({$formLoja.Tag = $formLoja.close()}) 
-$formLoja.Controls.Add($canc)
 
 #botão cancelar departamento
 $dcanc = New-Object System.Windows.Forms.Button 
@@ -213,53 +250,12 @@ $dcanc.Text = "Fechar"
 $dcanc.Add_Click({$formDepartamento.Tag = $formDepartamento.close()}) 
 $formDepartamento.Controls.Add($dcanc)
 
-#botão ok loja
-$ok = New-Object System.Windows.Forms.Button 
-$ok.Location = New-Object System.Drawing.Size(20,90)
-$ok.Size = New-Object System.Drawing.Size(100,20)
-$ok.Text = "Ok"
-$ok.Add_click({ #essa parte é executada ao clicar no botão ok
-    if($caixa1.text -eq ""){
-        $msgBottom.Text = "Loja não adicionada, caixa de texto vazia"
-    }
-    else{
-        $cont=0
-        foreach ($linha in Get-Content .\tbLoja.txt){ #verifica se já existe algum com o mesmo nome
-            if(($linha -split "\|")[1] -eq $caixa1.text){
-                $cont++
-                break
-            }
-
-        }
-        if($cont -eq 0){
-            $ultimo=Get-Content .\ixTbLoja.txt #variável recebe conteúdo do texto
-            $texto=$caixa1.text
-            Add-Content -Value "$ultimo|$texto" -Path .\tbLoja.txt #nova linha adicionada no arquivo
-
-            [int]$ultimo=$ultimo #variável é convertida para int
-            $ultimo++ #e é incrementada
-            [string]$ultimo=([string]$ultimo).PadLeft(4,'0') #variável volta a ser string padronizada com zeros à esquerda
-            Clear-Content -Path .\ixTbLoja.txt 
-            Add-Content -Value $ultimo -Path .\ixTbLoja.txt 
-            $idLoja.Text = "codLoja: " + $ultimo + ":"
-            $msgBottom.Text = "Loja $texto inserida."
-            $caixa1.text= ""
-        }
-        else{
-            $msgBottom.Text = "Loja já existente"
-        }
-        
-    }
-
-})
-$formLoja.Controls.Add($ok)
-
-#botão ok departamento
-$dok = New-Object System.Windows.Forms.Button #botão ok
+#botão botao ok departamento
+$dok = New-Object System.Windows.Forms.Button #botão botaoOkLoja
 $dok.Location = New-Object System.Drawing.Size(20,90)
 $dok.Size = New-Object System.Drawing.Size(100,20)
 $dok.Text = "Ok"
-$dok.Add_click({ #essa parte é executada ao clicar no botão ok
+$dok.Add_click({ #essa parte é executada ao clicar no botão botaoOkLoja
     if($dCaixa1.text -eq ""){
         $dMsgBottom.Text = "Departamento não adicionado, caixa de texto vazia"
     }
@@ -296,6 +292,18 @@ $dok.Add_click({ #essa parte é executada ao clicar no botão ok
 })
 $formDepartamento.Controls.Add($dok)
 
+# Produto #############################################################################################################################################
+#Janela Inserção de produto
+$formProduto = New-Object System.Windows.Forms.Form
+$formProduto.text = "Inserção de produto"
+$formProduto.size = New-Object System.Drawing.Size(350,200)
+$formProduto.StartPosition = "CenterScreen"
+
+
+
+
+# Funções ######################################################################################################################################################
+
 function popularLojas{ #preenche a listbox de lojas
     $listBoxLojas.items.Clear()
     foreach ($linha in Get-Content .\tbLoja.txt){ [void]$listBoxLojas.Items.Add($linha) } 
@@ -326,8 +334,8 @@ function exibeDepartamentos{
 #Início do programa
 #
 #
-$idLoja.Text = "codLoja: " + (Get-Content .\ixTbLoja.txt) + ":" #preenche o label
-$idDepartamento.Text = "codDpt: " + (Get-Content .\ixTbDepartamento.txt) + ":" #preenche o label
+$labelIdLoja.Text = "codLoja: " + (Get-Content .\ixTbLoja.txt) + ":" #preenche o labelLoja
+$idDepartamento.Text = "codDpt: " + (Get-Content .\ixTbDepartamento.txt) + ":" #preenche o labelLoja
 popularLojas
 
 
@@ -336,12 +344,7 @@ popularLojas
 $listBoxLojas.add_SelectedIndexChanged({ #Essa parte é executada quando o usuário clica em uma loja
     #$sel=$listBoxLojas.SelectedIndex
     #$mLabel.Text = "index $sel"
-
     exibeDepartamentos
-
-
-    #$listBoxSaida.items.add(($listBoxLojas.text -split "\|")[1])
-    
 })
 
 
@@ -355,7 +358,7 @@ $listBoxLojas.add_SelectedIndexChanged({ #Essa parte é executada quando o usuári
 #$mLabel.Text =$listBoxLojas.SelectedIndex
 #$formLoja.ShowDialog()#mostra a janela gráfica na tela
 #$formDepartamento.ShowDialog()
-#$idLoja.Text ="codLoja: " + ((Get-Content .\tbLoja.txt -Tail 1) -split "\|")[0]
+#$labelIdLoja.Text ="codLoja: " + ((Get-Content .\tbLoja.txt -Tail 1) -split "\|")[0]
 
 
 
