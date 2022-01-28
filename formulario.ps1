@@ -55,7 +55,7 @@ $inserirDepartamento.Location = New-Object System.Drawing.Size(180,90)
 $inserirDepartamento.Size = New-Object System.Drawing.Size(130,20)
 $inserirDepartamento.Text = "Criar departamento"
 $inserirDepartamento.Add_click({
-    $dcaixa1.Text=""
+    $textboxDepartamento.Text=""
     $formDepartamento.ShowDialog() 
     popularLojas
     $listBoxSaida.items.Clear() 
@@ -118,7 +118,7 @@ $botaoRelacionar.Add_click({
     else{
         $lojaAdicionada=($listBoxLojas.SelectedItem -split "\|")[0]
         $departamentoAdicionado=($listBoxSaida.SelectedItem -split "\|")[0]
-        Add-Content -Value "$lojaAdicionada|$departamentoAdicionado" -Path .\relacionamentos.txt
+        Add-Content -Value "$lojaAdicionada|$departamentoAdicionado" -Path .\rlLojaDepto.txt
         exibeDepartamentos
         [System.Windows.MessageBox]::Show('Relacionamento criado')
 
@@ -438,7 +438,7 @@ function exibeDepartamentos{
 
         $listBoxSaida.items.add($dpt)
 
-        foreach ($rel in Get-Content .\relacionamentos.txt){
+        foreach ($rel in Get-Content .\rlLojaDepto.txt){
             if( ( (($dpt -split "\|")[0]) -eq (($rel -split "\|")[1]) ) -and ( (($rel -split "\|")[0]) -eq (($listBoxLojas.SelectedItem -split "\|")[0]) ) ){
                 $listBoxSaida.items.remove($dpt)
             }
