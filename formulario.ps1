@@ -185,7 +185,10 @@ $botaoOkLoja.Add_click({ #essa parte é executada ao clicar no botão ok
             }
 
         }
-        if($cont -eq 0){
+        if($cont -ne 0){
+            $msgBottomLoja.Text = "Loja já existente."
+        }
+        else{
             $ultimo=Get-Content .\ixTbLoja.txt #variável recebe conteúdo do texto
             $texto=$textboxLoja.text
             Add-Content -Value "$ultimo|$texto" -Path .\tbLoja.txt #nova linha adicionada no arquivo
@@ -198,9 +201,6 @@ $botaoOkLoja.Add_click({ #essa parte é executada ao clicar no botão ok
             $labelIdLoja.Text = "codLoja: " + $ultimo + ":"
             $msgBottomLoja.Text = "Loja $texto inserida."
             $textboxLoja.text= ""
-        }
-        else{
-            $msgBottomLoja.Text = "Loja já existente"
         }
         
     }
@@ -266,9 +266,11 @@ $botaoOkDepartamento.Add_click({
                 $cont++
                 break
             }
-
         }
-        if($cont -eq 0){
+        if($cont -ne 0){
+            $msgBottomDepartamento.Text = "Departamento já existente."
+        }
+        else{
             $dultimo=Get-Content .\ixTbDepartamento.txt #variável recebe conteúdo do texto
             $dtexto=$textboxDepartamento.text
             Add-Content -Value "$dultimo|$dtexto" -Path .\tbDepartamento.txt #nova linha adicionada no arquivo
@@ -282,12 +284,6 @@ $botaoOkDepartamento.Add_click({
             $msgBottomDepartamento.Text = "Departamento $dtexto inserido."
             $textboxDepartamento.text= ""
         }
-        else{
-            $msgBottomDepartamento.Text = "Departamento já existente"
-        }
-
-
-        
     }
 })
 $formDepartamento.Controls.Add($botaoOkDepartamento)
@@ -341,13 +337,57 @@ $botaoCancelarProduto.Text = "Fechar"
 $botaoCancelarProduto.Add_Click({$formProduto.Tag = $formProduto.close()}) 
 $formProduto.Controls.Add($botaoCancelarProduto)
 
-#botão botao ok produto
+#botão ok produto
 $botaoOkProduto = New-Object System.Windows.Forms.Button #botão ok
 $botaoOkProduto.Location = New-Object System.Drawing.Size(20,390)
 $botaoOkProduto.Size = New-Object System.Drawing.Size(100,20)
 $botaoOkProduto.Text = "Ok"
 $botaoOkProduto.Add_click({
-    [System.Windows.MessageBox]::Show('Opção em desenvolvimento')
+
+    #verifica se está tudo selecionado
+    if ("" -eq $textboxNomeProduto.Text -or "" -eq $textboxCustoProduto.Text -or "" -eq $textboxPrecoProduto.Text -or $null -eq $listboxProduto.SelectedItem){
+        [System.Windows.MessageBox]::Show('Preencha todos os campos.')
+    }
+    else{
+        $cont=0
+        foreach ($linha in Get-Content .\tbProduto.txt){ #verifica se já existe algum com o mesmo nome
+            if(($linha -split "\|")[4] -eq $textboxNomeProduto.text){
+                $cont++
+                break
+            }
+        }
+        if($cont -ne 0){
+            [System.Windows.MessageBox]::Show('Produto já existente.')
+        }
+        else{ #se estiver tudo correto
+
+            #limpeza dos campos
+            #$textboxNomeProduto.Text=""
+            #$textboxCustoProduto.Text=""
+            #$textboxPrecoProduto.Text=""
+            #$listboxProduto.SelectedIndex=-1
+
+            $nomeAdicionado=$textboxNomeProduto.Text
+            $custoAdicionado=$textboxCustoProduto.Text
+            $precoAdicionado=$textboxPrecoProduto.Text
+            $idProdutoAdicionado=(Get-Content .\ixTbProduto.txt)
+            $idDepartamentoAdicionado=($listboxproduto.SelectedItem -split "\|")[0]
+
+            Add-Content -Value "$idProdutoAdicionado|$idDepartamentoAdicionado|$precoAdicionado|$custoAdicionado|$nomeAdicionado" -Path .\tbProduto.txt
+
+            $ultimo=Get-Content .\ixTbProduto.txt #variável recebe conteúdo do texto
+            [int]$ultimo=$ultimo #variável é convertida para int
+            $ultimo++ #e é incrementada
+            [string]$ultimo=([string]$ultimo).PadLeft(4,'0') #variável volta a ser string padronizada com zeros à esquerda
+            Clear-Content -Path .\ixTbProduto.txt 
+            Add-Content -Value $ultimo -Path .\ixTbProduto.txt
+            $labelIdProduto.Text = "codProd: " + $ultimo + ":"
+
+            
+            [System.Windows.MessageBox]::Show('Produto adicionado.')
+        }
+    }
+  
 })
 $formProduto.Controls.Add($botaoOkProduto)
 
