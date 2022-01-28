@@ -1,14 +1,14 @@
 #Assemblies
 Add-Type -AssemblyName System.Windows.forms
 Add-Type -Assemblyname System.Drawing
-Add-Type -AssemblyName PresentationFramework
+Add-Type -AssemblyName PresentationFramework #para janelas de erro ou sucesso
 
 #menu
 #Janela principal menu
 $menu = New-Object System.Windows.Forms.Form
 $menu.text = "Relacionamento loja/departamento"
 #$menu.size = New-Object System.Drawing.Size(350,200)
-$menu.size = New-Object System.Drawing.Size(750,600)
+$menu.size = New-Object System.Drawing.Size(460,500)
 $menu.StartPosition = "CenterScreen"
 
 #listbox do menu
@@ -24,7 +24,6 @@ $listBoxSaida.Location = New-Object System.Drawing.Size(10,350)
 $listBoxSaida.Size = New-Object System.Drawing.Size(260,20)
 $listBoxSaida.Height = 80
 $menu.Controls.Add($listBoxSaida)
-
 
 #Label menu
 $mLabel = New-Object System.Windows.Forms.label
@@ -45,13 +44,13 @@ $inserirLoja.Add_click({
         popularLojas
     }
     $msgBottom.Text= ""
-    $dMsgBottom.Text= ""
+    
     
 })
 $menu.Controls.Add($inserirLoja)
 
 #botão inserir departamento do menu
-$inserirDepartamento = New-Object System.Windows.Forms.Button #botão ok
+$inserirDepartamento = New-Object System.Windows.Forms.Button 
 $inserirDepartamento.Location = New-Object System.Drawing.Size(180,90)
 $inserirDepartamento.Size = New-Object System.Drawing.Size(130,20)
 $inserirDepartamento.Text = "Criar departamento"
@@ -60,11 +59,25 @@ $inserirDepartamento.Add_click({
     $formDepartamento.ShowDialog() 
     popularLojas
     $listBoxSaida.items.Clear() 
-    $msgBottom.Text= ""
     $dMsgBottom.Text= ""
     
 })
 $menu.Controls.Add($inserirDepartamento)
+
+#botão inserir produto do menu
+$inserirProduto = New-Object System.Windows.Forms.Button 
+$inserirProduto.Location = New-Object System.Drawing.Size(20,130)
+$inserirProduto.Size = New-Object System.Drawing.Size(130,20)
+$inserirProduto.Text = "Criar produto"
+$inserirProduto.Add_click({
+    #$dcaixa1.Text=""
+    $formProduto.ShowDialog()
+    
+    #popularLojas
+    
+    
+})
+$menu.Controls.Add($inserirProduto)
 
 #Label lojas do menu
 $LabelLojas = New-Object System.Windows.Forms.label
@@ -125,6 +138,12 @@ $formDepartamento = New-Object System.Windows.Forms.Form
 $formDepartamento.text = "Inserção de departamento"
 $formDepartamento.size = New-Object System.Drawing.Size(350,200)
 $formDepartamento.StartPosition = "CenterScreen"
+
+#Janela Inserção de produto
+$formProduto = New-Object System.Windows.Forms.Form
+$formProduto.text = "Inserção de produto"
+$formProduto.size = New-Object System.Drawing.Size(350,200)
+$formProduto.StartPosition = "CenterScreen"
 
 
 #Caixa de texto

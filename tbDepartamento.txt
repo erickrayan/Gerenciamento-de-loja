@@ -9,3 +9,5 @@
 0009|doces
 0010|Esportes
 0011|Bicicleta
+0012|Celulares
+0013|Material de construção
