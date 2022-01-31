@@ -1,24 +1,15 @@
-0001|Mesquita
-0002|Andaraí
-0003|Centro Rio de Janeiro
-0004|asdasfd
-0005|asdfasdf
-0006|asdfafa
-0007|sdfasdf
-0008|hey
-0009|a
-0010|hfgh
-0011|gdg
-0012|Gelo seco
-0013|nova iguaçu
-0014|mesquita
-0015|mesquita
-0016|mesquitas
-0017|Nilópolis
-0018|Campinas
-0019|Zona Sul
-0020|Arapiraca
-0021|campo grande
-0022|nova
-0023|brasilia
-0024|guarulhos
+0001 | Mesquita
+0002 | Andaraí
+0003 | Centro Rio de Janeiro
+0012 | Gelo seco
+0013 | nova iguaçu
+0017 | Nilópolis
+0018 | Campinas
+0019 | Zona Sul
+0020 | Arapiraca
+0021 | campo grande
+0022 | nova
+0023 | brasilia
+0024 | guarulhos
+0026 | nova01
+0027 | yetAnotherStore

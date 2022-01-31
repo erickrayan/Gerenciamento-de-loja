@@ -42,6 +42,7 @@ $inserirLoja.Add_click({
     $result=$formLoja.ShowDialog()
     if($result -eq "Cancel"){
         popularLojas
+        popularLojasVendas
     }
     $msgBottomLoja.Text= ""
     
@@ -85,6 +86,8 @@ $cadastrarVenda.Location = New-Object System.Drawing.Size(180,130)
 $cadastrarVenda.Size = New-Object System.Drawing.Size(130,20)
 $cadastrarVenda.Text = "Cadastrar venda"
 $cadastrarVenda.Add_click({
+    popularProdutosVendas
+    $labelDepartamentoVendas.Text = ""
     $formVendas.ShowDialog()
 })
 $menu.Controls.Add($cadastrarVenda)
@@ -126,9 +129,9 @@ $botaoRelacionar.Add_click({
         [System.Windows.MessageBox]::Show('Selecione uma loja e um departamento.', 'Erro')
     }
     else{
-        $lojaAdicionada=($listBoxLojas.SelectedItem -split "\|")[0]
-        $departamentoAdicionado=($listBoxSaida.SelectedItem -split "\|")[0]
-        Add-Content -Value "$lojaAdicionada|$departamentoAdicionado" -Path .\rlLojaDepto.txt
+        $lojaAdicionada=($listBoxLojas.SelectedItem -split " \| ")[0]
+        $departamentoAdicionado=($listBoxSaida.SelectedItem -split " \| ")[0]
+        Add-Content -Value "$lojaAdicionada | $departamentoAdicionado" -Path .\rlLojaDepto.txt
         exibeDepartamentos
         [System.Windows.MessageBox]::Show('Relacionamento criado')
 
@@ -189,7 +192,7 @@ $botaoOkLoja.Add_click({ #essa parte é executada ao clicar no botão ok
     else{
         $cont=0
         foreach ($linha in Get-Content .\tbLoja.txt){ #verifica se já existe algum com o mesmo nome
-            if(($linha -split "\|")[1] -eq $textboxLoja.text){
+            if(($linha -split " \| ")[1] -eq $textboxLoja.text){
                 $cont++
                 break
             }
@@ -201,7 +204,7 @@ $botaoOkLoja.Add_click({ #essa parte é executada ao clicar no botão ok
         else{
             $ultimo=Get-Content .\ixTbLoja.txt #variável recebe conteúdo do texto
             $texto=$textboxLoja.text
-            Add-Content -Value "$ultimo|$texto" -Path .\tbLoja.txt #nova linha adicionada no arquivo
+            Add-Content -Value "$ultimo | $texto" -Path .\tbLoja.txt #nova linha adicionada no arquivo
 
             [int]$ultimo=$ultimo #variável é convertida para int
             $ultimo++ #e é incrementada
@@ -272,7 +275,7 @@ $botaoOkDepartamento.Add_click({
     else{
         $cont=0
         foreach ($linha in Get-Content .\tbDepartamento.txt){ #verifica se já existe algum com o mesmo nome
-            if(($linha -split "\|")[1] -eq $textboxDepartamento.text){
+            if(($linha -split " \| ")[1] -eq $textboxDepartamento.text){
                 $cont++
                 break
             }
@@ -283,7 +286,7 @@ $botaoOkDepartamento.Add_click({
         else{
             $dultimo=Get-Content .\ixTbDepartamento.txt #variável recebe conteúdo do texto
             $dtexto=$textboxDepartamento.text
-            Add-Content -Value "$dultimo|$dtexto" -Path .\tbDepartamento.txt #nova linha adicionada no arquivo
+            Add-Content -Value "$dultimo | $dtexto" -Path .\tbDepartamento.txt #nova linha adicionada no arquivo
 
             [int]$dultimo=$dultimo #variável é convertida para int
             $dultimo++ #e é incrementada
@@ -361,7 +364,7 @@ $botaoOkProduto.Add_click({
     else{
         $cont=0
         foreach ($linha in Get-Content .\tbProduto.txt){ #verifica se já existe algum com o mesmo nome
-            if(($linha -split "\|")[4] -eq $textboxNomeProduto.text){
+            if(($linha -split " \| ")[4] -eq $textboxNomeProduto.text){
                 $cont++
                 break
             }
@@ -381,9 +384,9 @@ $botaoOkProduto.Add_click({
             $custoAdicionado=$textboxCustoProduto.Text
             $precoAdicionado=$textboxPrecoProduto.Text
             $idProdutoAdicionado=(Get-Content .\ixTbProduto.txt)
-            $idDepartamentoAdicionado=($listboxproduto.SelectedItem -split "\|")[0]
+            $idDepartamentoAdicionado=($listboxproduto.SelectedItem -split " \| ")[0]
 
-            Add-Content -Value "$idProdutoAdicionado|$idDepartamentoAdicionado|$precoAdicionado|$custoAdicionado|$nomeAdicionado" -Path .\tbProduto.txt
+            Add-Content -Value "$idProdutoAdicionado | $idDepartamentoAdicionado | $precoAdicionado | $custoAdicionado | $nomeAdicionado" -Path .\tbProduto.txt
 
             $ultimo=Get-Content .\ixTbProduto.txt #variável recebe conteúdo do texto
             [int]$ultimo=$ultimo #variável é convertida para int
@@ -454,6 +457,16 @@ $listBoxProdutosVendas.Location = New-Object System.Drawing.Size(10,132)
 $listBoxProdutosVendas.Size = New-Object System.Drawing.Size(260,20)
 $listBoxProdutosVendas.Height = 80
 $listBoxProdutosVendas.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+$listBoxProdutosVendas.add_SelectedIndexChanged({
+    foreach ($linha in Get-Content .\tbDepartamento.txt){
+        if((($linha -split " \| ")[0]) -eq (($listBoxProdutosVendas.SelectedItem -split " \| ")[1])){
+            $temp= ($linha -split " \| ")[1]
+            $labelDepartamentoVendas.Text = "Departamento: $temp"
+            break
+        }
+    }
+
+})
 $formVendas.Controls.Add($listBoxProdutosVendas)
 
 #Label loja venda
@@ -469,6 +482,12 @@ $labelProdutosVendas.Text = "Selecione o produto vendido"
 $labelProdutosVendas.Location =  New-Object System.Drawing.Size(9,95)
 $labelProdutosVendas.AutoSize = $true
 $formVendas.Controls.Add($labelProdutosVendas)
+
+#Label departamento venda
+$labelDepartamentoVendas = New-Object System.Windows.Forms.Label
+$labelDepartamentoVendas.Location =  New-Object System.Drawing.Size(9,155)
+$labelDepartamentoVendas.AutoSize = $true
+$formVendas.Controls.Add($labelDepartamentoVendas)
 
 
 
@@ -504,7 +523,7 @@ function exibeDepartamentos{
         $listBoxSaida.items.add($dpt)
 
         foreach ($rel in Get-Content .\rlLojaDepto.txt){
-            if( ( (($dpt -split "\|")[0]) -eq (($rel -split "\|")[1]) ) -and ( (($rel -split "\|")[0]) -eq (($listBoxLojas.SelectedItem -split "\|")[0]) ) ){
+            if( ( (($dpt -split " \| ")[0]) -eq (($rel -split " \| ")[1]) ) -and ( (($rel -split " \| ")[0]) -eq (($listBoxLojas.SelectedItem -split " \| ")[0]) ) ){
                 $listBoxSaida.items.remove($dpt)
             }
         }
@@ -529,7 +548,6 @@ $labelIdDepartamento.Text = "codDpt: " + (Get-Content .\ixTbDepartamento.txt) + 
 $labelIdProduto.Text = "codProd: " + (Get-Content .\ixTbProduto.txt) + ":" #preenche o labelProduto
 popularLojas
 popularLojasVendas
-popularProdutosVendas #mudar posição
 
 
 
@@ -553,7 +571,7 @@ $listBoxLojas.add_SelectedIndexChanged({ #Essa parte é executada quando o usuári
 #$mLabel.Text =$listBoxLojas.SelectedIndex
 #$formLoja.ShowDialog()#mostra a janela gráfica na tela
 #$formDepartamento.ShowDialog()
-#$labelIdLoja.Text ="codLoja: " + ((Get-Content .\tbLoja.txt -Tail 1) -split "\|")[0]
+#$labelIdLoja.Text ="codLoja: " + ((Get-Content .\tbLoja.txt -Tail 1) -split " \| ")[0]
 
 
 
