@@ -16,6 +16,9 @@ $listBoxLojas = New-Object System.Windows.Forms.ListBox
 $listBoxLojas.Location = New-Object System.Drawing.Size(10,200)
 $listBoxLojas.Size = New-Object System.Drawing.Size(260,20)
 $listBoxLojas.Height = 80
+$listBoxLojas.add_SelectedIndexChanged({ #Essa parte é executada quando o usuário clica em uma loja
+    exibeDepartamentos
+})
 $menu.Controls.Add($listBoxLojas)
 
 #listbox de saída do menu
@@ -88,6 +91,8 @@ $cadastrarVenda.Text = "Cadastrar venda"
 $cadastrarVenda.Add_click({
     popularProdutosVendas
     $labelDepartamentoVendas.Text = ""
+    $nVenda= (Get-Date -Format "ddMMyyHHmmss")
+    $labelNVendasVendas.Text = "Venda n°: $nVenda"
     $formVendas.ShowDialog()
 })
 $menu.Controls.Add($cadastrarVenda)
@@ -469,6 +474,17 @@ $listBoxProdutosVendas.add_SelectedIndexChanged({
 })
 $formVendas.Controls.Add($listBoxProdutosVendas)
 
+#listbox com itens da vendas
+$listBoxItens = New-Object System.Windows.Forms.ListBox
+$listBoxItens.Location = New-Object System.Drawing.Size(10,230)
+$listBoxItens.Size = New-Object System.Drawing.Size(260,20)
+$listBoxItens.Height = 80
+$formVendas.Controls.Add($listBoxItens)
+$apagar="0001 | 0002 | Item numero três | 3"
+$listBoxItens.Items.Add($apagar)
+$apagar="0004 | 0005 | Item numero quatro | 4"
+$listBoxItens.Items.Add($apagar)
+
 #Label loja venda
 $labelLojasVendas = New-Object System.Windows.Forms.Label
 $labelLojasVendas.Text = "Selecione a loja onde a venda foi realizada"
@@ -476,14 +492,20 @@ $labelLojasVendas.Location =  New-Object System.Drawing.Size(9,15)
 $labelLojasVendas.AutoSize = $true
 $formVendas.Controls.Add($labelLojasVendas)
 
-#Label produto venda
+#Label número de vendas vendas
+$labelNVendasVendas = New-Object System.Windows.Forms.Label
+$labelNVendasVendas.Location =  New-Object System.Drawing.Size(9,0)
+$labelNVendasVendas.AutoSize = $true
+$formVendas.Controls.Add($labelNVendasVendas)
+
+#Label produto vendas
 $labelProdutosVendas = New-Object System.Windows.Forms.Label
 $labelProdutosVendas.Text = "Selecione o produto vendido"
 $labelProdutosVendas.Location =  New-Object System.Drawing.Size(9,95)
 $labelProdutosVendas.AutoSize = $true
 $formVendas.Controls.Add($labelProdutosVendas)
 
-#Label departamento venda
+#Label departamento vendas
 $labelDepartamentoVendas = New-Object System.Windows.Forms.Label
 $labelDepartamentoVendas.Location =  New-Object System.Drawing.Size(9,155)
 $labelDepartamentoVendas.AutoSize = $true
@@ -531,9 +553,6 @@ function exibeDepartamentos{
 
 }
 
-function geraHorario{
-    return(Get-Date -Format "ddMMyyHHmmss")
-}
 
 
 
@@ -552,11 +571,6 @@ popularLojasVendas
 
 
 
-$listBoxLojas.add_SelectedIndexChanged({ #Essa parte é executada quando o usuário clica em uma loja
-    #$sel=$listBoxLojas.SelectedIndex
-    #$mLabel.Text = "index $sel"
-    exibeDepartamentos
-})
 
 
 
@@ -568,7 +582,7 @@ $listBoxLojas.add_SelectedIndexChanged({ #Essa parte é executada quando o usuári
 
 
 
-#$mLabel.Text =$listBoxLojas.SelectedIndex
+
 #$formLoja.ShowDialog()#mostra a janela gráfica na tela
 #$formDepartamento.ShowDialog()
 #$labelIdLoja.Text ="codLoja: " + ((Get-Content .\tbLoja.txt -Tail 1) -split " \| ")[0]
