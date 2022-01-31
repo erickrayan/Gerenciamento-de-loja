@@ -12,7 +12,7 @@ $menu.size = New-Object System.Drawing.Size(460,500)
 $menu.StartPosition = "CenterScreen"
 
 #listbox do menu
-$listBoxLojas = New-Object System.Windows.Forms.Listbox
+$listBoxLojas = New-Object System.Windows.Forms.ListBox
 $listBoxLojas.Location = New-Object System.Drawing.Size(10,200)
 $listBoxLojas.Size = New-Object System.Drawing.Size(260,20)
 $listBoxLojas.Height = 80
@@ -78,6 +78,16 @@ $inserirProduto.Add_click({
     
 })
 $menu.Controls.Add($inserirProduto)
+
+#botão cadastrar venda do menu
+$cadastrarVenda = New-Object System.Windows.Forms.Button 
+$cadastrarVenda.Location = New-Object System.Drawing.Size(180,130)
+$cadastrarVenda.Size = New-Object System.Drawing.Size(130,20)
+$cadastrarVenda.Text = "Cadastrar venda"
+$cadastrarVenda.Add_click({
+    $formVendas.ShowDialog()
+})
+$menu.Controls.Add($cadastrarVenda)
 
 #Label lojas do menu
 $LabelLojas = New-Object System.Windows.Forms.label
@@ -418,17 +428,72 @@ $formProduto.Controls.Add($listboxProduto)
 
 
 
+
+
+
+
+# Venda #########################################################################################################################################################
+
+#Janela cadastro de venda
+$formVendas = New-Object System.Windows.Forms.Form
+$formVendas.text = "Cadastro de venda"
+$formVendas.size = New-Object System.Drawing.Size(350,480)
+$formVendas.StartPosition = "CenterScreen"
+
+#combobox lojas de vendas
+$listBoxLojasVendas = New-Object System.Windows.Forms.ComboBox
+$listBoxLojasVendas.Location = New-Object System.Drawing.Size(10,52)
+$listBoxLojasVendas.Size = New-Object System.Drawing.Size(260,20)
+$listBoxLojasVendas.Height = 80
+$listBoxLojasVendas.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+$formVendas.Controls.Add($listBoxLojasVendas)
+
+#combobox produtos de vendas
+$listBoxProdutosVendas = New-Object System.Windows.Forms.ComboBox
+$listBoxProdutosVendas.Location = New-Object System.Drawing.Size(10,132)
+$listBoxProdutosVendas.Size = New-Object System.Drawing.Size(260,20)
+$listBoxProdutosVendas.Height = 80
+$listBoxProdutosVendas.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+$formVendas.Controls.Add($listBoxProdutosVendas)
+
+#Label loja venda
+$labelLojasVendas = New-Object System.Windows.Forms.Label
+$labelLojasVendas.Text = "Selecione a loja onde a venda foi realizada"
+$labelLojasVendas.Location =  New-Object System.Drawing.Size(9,15)
+$labelLojasVendas.AutoSize = $true
+$formVendas.Controls.Add($labelLojasVendas)
+
+#Label produto venda
+$labelProdutosVendas = New-Object System.Windows.Forms.Label
+$labelProdutosVendas.Text = "Selecione o produto vendido"
+$labelProdutosVendas.Location =  New-Object System.Drawing.Size(9,95)
+$labelProdutosVendas.AutoSize = $true
+$formVendas.Controls.Add($labelProdutosVendas)
+
+
+
 # Funções ######################################################################################################################################################
 
 function popularLojas{ #preenche a listbox de lojas
     $listBoxLojas.items.Clear()
     foreach ($linha in Get-Content .\tbLoja.txt){ [void]$listBoxLojas.Items.Add($linha) } 
 }
+function popularLojasVendas{ #preenche a listbox de lojas vendas
+    $listBoxLojasVendas.items.Clear()
+    foreach ($linha in Get-Content .\tbLoja.txt){ [void]$listBoxLojasVendas.Items.Add($linha) } 
+}
 
 function popularDptProduto{ #preenche a listbox departamentos no formulário de produto
     $listboxProduto.items.Clear()
     foreach ($linha in Get-Content .\tbDepartamento.txt){ [void]$listboxProduto.Items.Add($linha) } 
 }
+
+function popularProdutosVendas{ #preenche a listbox de produtos vendas
+    $listBoxProdutosVendas.items.Clear()
+    foreach ($linha in Get-Content .\tbProduto.txt){ [void]$listBoxProdutosVendas.Items.Add($linha) } 
+}
+
+
 
 function exibeDepartamentos{
     $listBoxSaida.items.Clear()
@@ -447,6 +512,10 @@ function exibeDepartamentos{
 
 }
 
+function geraHorario{
+    return(Get-Date -Format "ddMMyyHHmmss")
+}
+
 
 
 
@@ -459,6 +528,8 @@ $labelIdLoja.Text = "codLoja: " + (Get-Content .\ixTbLoja.txt) + ":" #preenche o
 $labelIdDepartamento.Text = "codDpt: " + (Get-Content .\ixTbDepartamento.txt) + ":" #preenche o labelDepartamento
 $labelIdProduto.Text = "codProd: " + (Get-Content .\ixTbProduto.txt) + ":" #preenche o labelProduto
 popularLojas
+popularLojasVendas
+popularProdutosVendas #mudar posição
 
 
 
@@ -473,6 +544,8 @@ $listBoxLojas.add_SelectedIndexChanged({ #Essa parte é executada quando o usuári
 
 
 [void]$menu.ShowDialog()
+#[void]$formVendas.ShowDialog()
+
 
 
 
