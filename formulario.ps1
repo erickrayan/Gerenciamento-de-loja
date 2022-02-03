@@ -6,7 +6,7 @@ Add-Type -AssemblyName PresentationFramework #para janelas de erro ou sucesso
 #menu ####################################################################################################################
 #Janela principal menu
 $menu = New-Object System.Windows.Forms.Form
-$menu.text = "Relacionamento loja/departamento"
+$menu.text = "Gerenciador Loja"
 #$menu.size = New-Object System.Drawing.Size(350,200)
 $menu.size = New-Object System.Drawing.Size(460,500)
 $menu.StartPosition = "CenterScreen"
@@ -91,8 +91,12 @@ $cadastrarVenda.Text = "Cadastrar venda"
 $cadastrarVenda.Add_click({
     popularProdutosVendas
     $labelDepartamentoVendas.Text = ""
-    $nVenda= (Get-Date -Format "ddMMyyHHmmss")
-    $labelNVendasVendas.Text = "Venda n°: $nVenda"
+    $listBoxItens.Items.Clear()
+    $labelTotalVendas.Text = "Total: R$ $total"
+    $textboxQuantidadeVendas.Text = "1"
+    $horaVenda= (Get-Date -Format "ddMMyyHHmmss")
+    $idVenda= Get-Content .\ixTbVenda.txt
+    $labelNVendasVendas.Text = "Venda n°: $idVenda"
     $formVendas.ShowDialog()
 })
 $menu.Controls.Add($cadastrarVenda)
@@ -364,7 +368,7 @@ $botaoOkProduto.Add_click({
 
     #verifica se está tudo selecionado
     if ("" -eq $textboxNomeProduto.Text -or "" -eq $textboxCustoProduto.Text -or "" -eq $textboxPrecoProduto.Text -or $null -eq $listboxProduto.SelectedItem){
-        [System.Windows.MessageBox]::Show('Preencha todos os campos.')
+        [System.Windows.MessageBox]::Show('Preencha todos os campos.', 'Erro')
     }
     else{
         $cont=0
@@ -450,7 +454,7 @@ $formVendas.StartPosition = "CenterScreen"
 
 #combobox lojas de vendas
 $listBoxLojasVendas = New-Object System.Windows.Forms.ComboBox
-$listBoxLojasVendas.Location = New-Object System.Drawing.Size(10,52)
+$listBoxLojasVendas.Location = New-Object System.Drawing.Size(10,62)
 $listBoxLojasVendas.Size = New-Object System.Drawing.Size(260,20)
 $listBoxLojasVendas.Height = 80
 $listBoxLojasVendas.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
@@ -458,7 +462,7 @@ $formVendas.Controls.Add($listBoxLojasVendas)
 
 #combobox produtos de vendas
 $listBoxProdutosVendas = New-Object System.Windows.Forms.ComboBox
-$listBoxProdutosVendas.Location = New-Object System.Drawing.Size(10,132)
+$listBoxProdutosVendas.Location = New-Object System.Drawing.Size(10,142)
 $listBoxProdutosVendas.Size = New-Object System.Drawing.Size(260,20)
 $listBoxProdutosVendas.Height = 80
 $listBoxProdutosVendas.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
@@ -470,46 +474,186 @@ $listBoxProdutosVendas.add_SelectedIndexChanged({
             break
         }
     }
+    $textboxQuantidadeVendas.Text = "1"
 
 })
 $formVendas.Controls.Add($listBoxProdutosVendas)
 
 #listbox com itens da vendas
 $listBoxItens = New-Object System.Windows.Forms.ListBox
-$listBoxItens.Location = New-Object System.Drawing.Size(10,230)
+$listBoxItens.Location = New-Object System.Drawing.Size(10,240)
 $listBoxItens.Size = New-Object System.Drawing.Size(260,20)
 $listBoxItens.Height = 80
 $formVendas.Controls.Add($listBoxItens)
-$apagar="0001 | 0002 | Item numero três | 3"
-$listBoxItens.Items.Add($apagar)
-$apagar="0004 | 0005 | Item numero quatro | 4"
-$listBoxItens.Items.Add($apagar)
 
 #Label loja venda
 $labelLojasVendas = New-Object System.Windows.Forms.Label
 $labelLojasVendas.Text = "Selecione a loja onde a venda foi realizada"
-$labelLojasVendas.Location =  New-Object System.Drawing.Size(9,15)
+$labelLojasVendas.Location =  New-Object System.Drawing.Size(9,25)
 $labelLojasVendas.AutoSize = $true
 $formVendas.Controls.Add($labelLojasVendas)
 
 #Label número de vendas vendas
 $labelNVendasVendas = New-Object System.Windows.Forms.Label
-$labelNVendasVendas.Location =  New-Object System.Drawing.Size(9,0)
+$labelNVendasVendas.Location =  New-Object System.Drawing.Size(9,2)
 $labelNVendasVendas.AutoSize = $true
 $formVendas.Controls.Add($labelNVendasVendas)
 
 #Label produto vendas
 $labelProdutosVendas = New-Object System.Windows.Forms.Label
 $labelProdutosVendas.Text = "Selecione o produto vendido"
-$labelProdutosVendas.Location =  New-Object System.Drawing.Size(9,95)
+$labelProdutosVendas.Location =  New-Object System.Drawing.Size(9,105)
 $labelProdutosVendas.AutoSize = $true
 $formVendas.Controls.Add($labelProdutosVendas)
 
 #Label departamento vendas
 $labelDepartamentoVendas = New-Object System.Windows.Forms.Label
-$labelDepartamentoVendas.Location =  New-Object System.Drawing.Size(9,155)
+$labelDepartamentoVendas.Location =  New-Object System.Drawing.Size(9,165)
 $labelDepartamentoVendas.AutoSize = $true
 $formVendas.Controls.Add($labelDepartamentoVendas)
+
+#Label quantidade vendas
+$labelQuantidadeVendas = New-Object System.Windows.Forms.Label
+$labelQuantidadeVendas.Location =  New-Object System.Drawing.Size(9,212)
+$labelQuantidadeVendas.AutoSize = $true
+$labelQuantidadeVendas.Text = "Qtd:"
+$formVendas.Controls.Add($labelQuantidadeVendas)
+
+#Label valor total vendas
+$labelTotalVendas = New-Object System.Windows.Forms.Label
+$labelTotalVendas.Location =  New-Object System.Drawing.Size(9,340)
+$labelTotalVendas.AutoSize = $true
+$formVendas.Controls.Add($labelTotalVendas)
+
+#Caixa de texto quantidade vendas
+$textboxQuantidadeVendas = New-Object System.Windows.Forms.TextBox
+$textboxQuantidadeVendas.Location = New-Object System.Drawing.Size(40,210)
+$textboxQuantidadeVendas.Size = New-Object System.Drawing.Size(35,20)
+$textboxQuantidadeVendas.Text = "1"
+$formVendas.Controls.Add($textboxQuantidadeVendas)
+
+#botão menos vendas
+$botãoMenos = New-Object System.Windows.Forms.Button
+$botãoMenos.Location = New-Object System.Drawing.Size(77,210)
+$botãoMenos.Size = New-Object System.Drawing.Size(20,20)
+$botãoMenos.Text = "-"
+$botãoMenos.Add_click({
+    
+    [int]$inteiro= $textboxQuantidadeVendas.Text
+    if ($inteiro -gt 1){
+        $inteiro--
+        $textboxQuantidadeVendas.Text=$inteiro
+    }
+
+})
+$formVendas.Controls.Add($botãoMenos)
+
+#botão mais vendas
+$botãoMais = New-Object System.Windows.Forms.Button
+$botãoMais.Location = New-Object System.Drawing.Size(99,210)
+$botãoMais.Size = New-Object System.Drawing.Size(20,20)
+$botãoMais.Text = "+"
+$botãoMais.Add_click({
+    [int]$inteiro= $textboxQuantidadeVendas.Text
+    $inteiro++
+    $textboxQuantidadeVendas.Text=$inteiro
+
+})
+$formVendas.Controls.Add($botãoMais)
+
+#botão adicionar vendas
+$botãoAdicionar = New-Object System.Windows.Forms.Button
+$botãoAdicionar.Location = New-Object System.Drawing.Size(121,210)
+$botãoAdicionar.Size = New-Object System.Drawing.Size(76,20)
+$botãoAdicionar.Text = "Adicionar"
+$botãoAdicionar.Add_click({
+    if($listBoxProdutosVendas.SelectedIndex -eq -1 -or $listBoxLojasVendas.SelectedIndex -eq -1){
+        [System.Windows.MessageBox]::Show('Selecione uma loja e um produto.', 'Erro')
+    }
+    else{
+        
+        if([int]$textboxQuantidadeVendas.Text -lt 1){
+            [System.Windows.MessageBox]::Show('Quantidade deve ser ao menos 1', 'Erro')
+        }
+        else {
+            $idProdVend= ($listBoxProdutosVendas.SelectedItem -split " \| ")[0]
+            $nomeProdVend= ($listBoxProdutosVendas.SelectedItem -split " \| ")[4]
+            $valorProdVend= ($listBoxProdutosVendas.SelectedItem -split " \| ")[2]
+            $qtdProdVend= $textboxQuantidadeVendas.Text
+            $listBoxItens.Items.Add("$idProdVend | $nomeProdVend | $valorProdVend | $qtdProdVend")
+
+            somarValoresVendas
+        }
+    }
+})
+$formVendas.Controls.Add($botãoAdicionar)
+
+#botão remover vendas
+$botãoRemover = New-Object System.Windows.Forms.Button
+$botãoRemover.Location = New-Object System.Drawing.Size(200,210)
+$botãoRemover.Size = New-Object System.Drawing.Size(70,20)
+$botãoRemover.Text = "Remover"
+$botãoRemover.Add_click({
+    $listBoxItens.Items.Remove($listBoxItens.SelectedItem)
+
+    somarValoresVendas
+})
+$formVendas.Controls.Add($botãoRemover)
+
+#botão cancelar vendas
+$botaoCancelarVendas = New-Object System.Windows.Forms.Button 
+$botaoCancelarVendas.Location = New-Object System.Drawing.Size(130,390)
+$botaoCancelarVendas.Size = New-Object System.Drawing.Size(100,20)
+$botaoCancelarVendas.Text = "Fechar"
+$botaoCancelarVendas.Add_Click({$formVendas.Tag = $formVendas.close()}) 
+$formVendas.Controls.Add($botaoCancelarVendas)
+
+#botão ok vendas
+$botaoOkVendas = New-Object System.Windows.Forms.Button #botão ok
+$botaoOkVendas.Location = New-Object System.Drawing.Size(20,390)
+$botaoOkVendas.Size = New-Object System.Drawing.Size(100,20)
+$botaoOkVendas.Text = "Ok"
+$botaoOkVendas.Add_click({
+    if($listBoxLojasVendas.SelectedIndex -eq -1){
+        [System.Windows.MessageBox]::Show('Selecione uma loja.', 'Erro')
+    }
+    else{
+        if($listBoxItens.Items.Count -eq 0){
+            [System.Windows.MessageBox]::Show('Necessário ao menos 1 item', 'Erro')
+        }
+        else{
+
+            #Adiciona a venda na tabela
+            $idLojaAdicionado=($listBoxLojasVendas.SelectedItem -split " \| ")[0]
+            $total=somarValoresVendas
+            Add-Content -Value "$idVenda | $idLojaAdicionado | $horaVenda | $total" -Path .\tbVenda.txt
+
+            #Adiciona os itens na tabela
+            foreach ($item in $listBoxItens.Items){
+                $idProdutoAdicionado= ($item -split " \| ")[0]
+                $qtdProdutoAdicionado= ($item -split " \| ")[3]
+                Add-Content -Value "$idVenda | $idProdutoAdicionado | $qtdProdutoAdicionado" -Path .\tbItemVenda.txt
+            }
+
+            #Atualiza o ixTbVenda
+            [int]$idVenda=$idVenda #variável é convertida para int
+            $idVenda++ #e é incrementada
+            [string]$idVenda=([string]$idVenda).PadLeft(4,'0') #variável volta a ser string padronizada com zeros à esquerda
+            Clear-Content -Path .\ixTbVenda.txt 
+            Add-Content -Value $idVenda -Path .\ixTbVenda.txt 
+      
+            
+            $formVendas.Tag = $formVendas.close()
+            [System.Windows.MessageBox]::Show('Venda cadastrada')
+        }
+
+        
+           
+        
+    }
+})
+$formVendas.Controls.Add($botaoOkVendas)
+
 
 
 
@@ -553,6 +697,18 @@ function exibeDepartamentos{
 
 }
 
+function somarValoresVendas {
+    [float]$soma=0
+    foreach ($linha in $listBoxItens.Items){ #soma os valores
+        $soma=$soma + ([float] ((($linha -split " \| ")[2]) -replace ',','.')) * ([float] ((($linha -split " \| ")[3]) -replace ',','.'))
+    }
+    [string]$total=$soma
+    $total= $total -replace '\.',',' #converte pontos em vírgulas e adiciona na variável
+    $labelTotalVendas.Text = "Total: R$ $total"
+    return $total
+
+}
+
 
 
 
@@ -583,9 +739,9 @@ popularLojasVendas
 
 
 
-#$formLoja.ShowDialog()#mostra a janela gráfica na tela
-#$formDepartamento.ShowDialog()
-#$labelIdLoja.Text ="codLoja: " + ((Get-Content .\tbLoja.txt -Tail 1) -split " \| ")[0]
+
+
+
 
 
 
