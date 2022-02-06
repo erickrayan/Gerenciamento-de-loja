@@ -53,6 +53,19 @@ $inserirLoja.Add_click({
 })
 $menu.Controls.Add($inserirLoja)
 
+#botão inserir região do menu
+$inserirRegiao = New-Object System.Windows.Forms.Button 
+$inserirRegiao.Location = New-Object System.Drawing.Size(20,50)
+$inserirRegiao.Size = New-Object System.Drawing.Size(130,20)
+$inserirRegiao.Text = "Criar região"
+$inserirRegiao.Add_click({
+    $textboxRegiao.Text=""
+    $formRegiao.ShowDialog()
+    $msgBottomRegiao.Text= ""
+    
+})
+$menu.Controls.Add($inserirRegiao)
+
 #botão inserir departamento do menu
 $inserirDepartamento = New-Object System.Windows.Forms.Button 
 $inserirDepartamento.Location = New-Object System.Drawing.Size(180,90)
@@ -201,7 +214,7 @@ $botaoOkLoja.Add_click({ #essa parte é executada ao clicar no botão ok
     else{
         $cont=0
         foreach ($linha in Get-Content .\tbLoja.txt){ #verifica se já existe algum com o mesmo nome
-            if(($linha -split " \| ")[1] -eq $textboxLoja.text){
+            if(($linha -split " \| ")[2] -eq $textboxLoja.text){
                 $cont++
                 break
             }
@@ -230,7 +243,87 @@ $botaoOkLoja.Add_click({ #essa parte é executada ao clicar no botão ok
 })
 $formLoja.Controls.Add($botaoOkLoja)
 
+# Região #################################################################################################################
 
+#Janela Inserção de região
+$formRegiao = New-Object System.Windows.Forms.Form
+$formRegiao.text = "Inserção de região"
+$formRegiao.size = New-Object System.Drawing.Size(350,200)
+$formRegiao.StartPosition = "CenterScreen"
+
+#Caixa de texto região
+$textboxRegiao = New-Object System.Windows.Forms.TextBox
+$textboxRegiao.Location = New-Object System.Drawing.Size(100,50)
+$textboxRegiao.Size = New-Object System.Drawing.Size(208,20)
+$formRegiao.Controls.Add($textboxRegiao) 
+
+#Label regiao
+$labelRegiao = New-Object System.Windows.Forms.Label
+$labelRegiao.Text = "Digite o nome da região a ser criada:"
+$labelRegiao.Location =  New-Object System.Drawing.Size(20,15)
+$labelRegiao.AutoSize = $true
+$formRegiao.Controls.Add($labelRegiao)
+
+#Mensagem parte inferior região
+$msgBottomRegiao = New-Object System.Windows.Forms.Label
+$msgBottomRegiao.Location =  New-Object System.Drawing.Size(20,130)
+$msgBottomRegiao.AutoSize = $true
+$formRegiao.Controls.Add($msgBottomRegiao)
+
+#label idRegiao
+$labelIdRegiao = New-Object System.Windows.Forms.Label
+$labelIdRegiao.Location =  New-Object System.Drawing.Size(23,52)
+$labelIdRegiao.AutoSize = $true
+$formRegiao.Controls.Add($labelIdRegiao)
+
+#botão cancelar região
+$botaoCancelarRegiao = New-Object System.Windows.Forms.Button 
+$botaoCancelarRegiao.Location = New-Object System.Drawing.Size(130,90)
+$botaoCancelarRegiao.Size = New-Object System.Drawing.Size(100,20)
+$botaoCancelarRegiao.Text = "Fechar"
+$botaoCancelarRegiao.Add_Click({$formRegiao.Tag = $formRegiao.close()}) 
+$formRegiao.Controls.Add($botaoCancelarRegiao)
+
+#botão ok região
+$botaoOkRegiao = New-Object System.Windows.Forms.Button 
+$botaoOkRegiao.Location = New-Object System.Drawing.Size(20,90)
+$botaoOkRegiao.Size = New-Object System.Drawing.Size(100,20)
+$botaoOkRegiao.Text = "Ok"
+$botaoOkRegiao.Add_click({ #essa parte é executada ao clicar no botão ok
+    if($textboxRegiao.text -eq ""){
+        $msgBottomRegiao.Text = "Região não adicionada, caixa de texto vazia"
+    }
+    else{
+        $cont=0
+        foreach ($linha in Get-Content .\tbRegiao.txt){ #verifica se já existe algum com o mesmo nome
+            if(($linha -split " \| ")[1] -eq $textboxRegiao.text){
+                $cont++
+                break
+            }
+
+        }
+        if($cont -ne 0){
+            $msgBottomRegiao.Text = "Região já existente."
+        }
+        else{
+            $ultimo=Get-Content .\ixTbRegiao.txt #variável recebe conteúdo do texto
+            $texto=$textboxRegiao.text
+            Add-Content -Value "$ultimo | $texto" -Path .\tbRegiao.txt #nova linha adicionada no arquivo
+
+            [int]$ultimo=$ultimo #variável é convertida para int
+            $ultimo++ #e é incrementada
+            [string]$ultimo=([string]$ultimo).PadLeft(4,'0') #variável volta a ser string padronizada com zeros à esquerda
+            Clear-Content -Path .\ixTbRegiao.txt 
+            Add-Content -Value $ultimo -Path .\ixTbRegiao.txt 
+            $labelIdRegiao.Text = "codReg: " + $ultimo + ":"
+            $msgBottomRegiao.Text = "Região $texto inserida."
+            $textboxRegiao.text= ""
+        }
+        
+    }
+
+})
+$formRegiao.Controls.Add($botaoOkRegiao)
 
 # Departamento ############################################################################################################
 #Janela Inserção de departamento
@@ -708,6 +801,7 @@ function somarValoresVendas {
 #
 #
 $labelIdLoja.Text = "codLoja: " + (Get-Content .\ixTbLoja.txt) + ":" #preenche o labelLoja
+$labelIdRegiao.Text = "codReg: " + (Get-Content .\ixTbRegiao.txt) + ":" #preenche o labelRegiao
 $labelIdDepartamento.Text = "codDpt: " + (Get-Content .\ixTbDepartamento.txt) + ":" #preenche o labelDepartamento
 $labelIdProduto.Text = "codProd: " + (Get-Content .\ixTbProduto.txt) + ":" #preenche o labelProduto
 popularLojas
