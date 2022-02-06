@@ -94,7 +94,7 @@ $cadastrarVenda.Add_click({
     $listBoxItens.Items.Clear()
     $labelTotalVendas.Text = "Total: R$ $total"
     $textboxQuantidadeVendas.Text = "1"
-    $horaVenda= (Get-Date -Format "ddMMyyHHmmss")
+    $horaVenda= (Get-Date -Format "ddMMyyHHmmss") #é usada ao adicionar no arquivo texto
     $idVenda= Get-Content .\ixTbVenda.txt
     $labelNVendasVendas.Text = "Venda n°: $idVenda"
     $formVendas.ShowDialog()
@@ -441,9 +441,6 @@ $formProduto.Controls.Add($listboxProduto)
 
 
 
-
-
-
 # Venda #########################################################################################################################################################
 
 #Janela cadastro de venda
@@ -570,14 +567,13 @@ $botãoAdicionar.Add_click({
     if($listBoxProdutosVendas.SelectedIndex -eq -1 -or $listBoxLojasVendas.SelectedIndex -eq -1){
         [System.Windows.MessageBox]::Show('Selecione uma loja e um produto.', 'Erro')
     }
-    else{
-        
+    else{  
         if([int]$textboxQuantidadeVendas.Text -lt 1){
             [System.Windows.MessageBox]::Show('Quantidade deve ser ao menos 1', 'Erro')
         }
         else {
-            $idProdVend= ($listBoxProdutosVendas.SelectedItem -split " \| ")[0]
-            $nomeProdVend= ($listBoxProdutosVendas.SelectedItem -split " \| ")[4]
+            $idProdVend=    ($listBoxProdutosVendas.SelectedItem -split " \| ")[0]
+            $nomeProdVend=  ($listBoxProdutosVendas.SelectedItem -split " \| ")[4]
             $valorProdVend= ($listBoxProdutosVendas.SelectedItem -split " \| ")[2]
             $qtdProdVend= $textboxQuantidadeVendas.Text
             $listBoxItens.Items.Add("$idProdVend | $nomeProdVend | $valorProdVend | $qtdProdVend")
@@ -595,7 +591,6 @@ $botãoRemover.Size = New-Object System.Drawing.Size(70,20)
 $botãoRemover.Text = "Remover"
 $botãoRemover.Add_click({
     $listBoxItens.Items.Remove($listBoxItens.SelectedItem)
-
     somarValoresVendas
 })
 $formVendas.Controls.Add($botãoRemover)
@@ -642,14 +637,11 @@ $botaoOkVendas.Add_click({
             Clear-Content -Path .\ixTbVenda.txt 
             Add-Content -Value $idVenda -Path .\ixTbVenda.txt 
       
-            
+
             $formVendas.Tag = $formVendas.close()
             [System.Windows.MessageBox]::Show('Venda cadastrada')
         }
-
-        
-           
-        
+  
     }
 })
 $formVendas.Controls.Add($botaoOkVendas)
@@ -678,11 +670,8 @@ function popularProdutosVendas{ #preenche a listbox de produtos vendas
     foreach ($linha in Get-Content .\tbProduto.txt){ [void]$listBoxProdutosVendas.Items.Add($linha) } 
 }
 
-
-
 function exibeDepartamentos{
     $listBoxSaida.items.Clear()
-
 
     foreach ($dpt in Get-Content .\tbDepartamento.txt){
 
@@ -724,24 +713,4 @@ $labelIdProduto.Text = "codProd: " + (Get-Content .\ixTbProduto.txt) + ":" #pree
 popularLojas
 popularLojasVendas
 
-
-
-
-
-
-
-
 [void]$menu.ShowDialog()
-#[void]$formVendas.ShowDialog()
-
-
-
-
-
-
-
-
-
-
-
-
