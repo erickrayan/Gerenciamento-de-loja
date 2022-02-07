@@ -13,4 +13,6 @@
 0024 | 0001 | guarulhos
 0026 | 0001 | nova01
 0027 | 0001 | yetAnotherStore
-0028 | Chapecó
+0028 | 0001 | Chapecó
+0030 | 0001 | Mato Grosso do Sul
+0031 | 0004 | Bahia

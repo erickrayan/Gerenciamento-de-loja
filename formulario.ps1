@@ -7,7 +7,6 @@ Add-Type -AssemblyName PresentationFramework #para janelas de erro ou sucesso
 #Janela principal menu
 $menu = New-Object System.Windows.Forms.Form
 $menu.text = "Gerenciador Loja"
-#$menu.size = New-Object System.Drawing.Size(350,200)
 $menu.size = New-Object System.Drawing.Size(460,500)
 $menu.StartPosition = "CenterScreen"
 
@@ -42,6 +41,7 @@ $inserirLoja.Size = New-Object System.Drawing.Size(130,20)
 $inserirLoja.Text = "Criar loja"
 $inserirLoja.Add_click({
     $textboxLoja.Text=""
+    popularRegiaoLoja
     $result=$formLoja.ShowDialog()
     if($result -eq "Cancel"){
         popularLojas
@@ -166,7 +166,7 @@ $menu.Controls.Add($botaoRelacionar)
 #Janela Inserção de loja
 $formLoja = New-Object System.Windows.Forms.Form
 $formLoja.text = "Inserção de loja"
-$formLoja.size = New-Object System.Drawing.Size(350,200)
+$formLoja.size = New-Object System.Drawing.Size(350,280)
 $formLoja.StartPosition = "CenterScreen"
 
 #Caixa de texto loja
@@ -182,9 +182,16 @@ $labelLoja.Location =  New-Object System.Drawing.Size(20,15)
 $labelLoja.AutoSize = $true
 $formLoja.Controls.Add($labelLoja)
 
+#Label região loja
+$labelRegiaoLoja = New-Object System.Windows.Forms.Label
+$labelRegiaoLoja.Text = "Selecione a região da loja:"
+$labelRegiaoLoja.Location =  New-Object System.Drawing.Size(20,95)
+$labelRegiaoLoja.AutoSize = $true
+$formLoja.Controls.Add($labelRegiaoLoja)
+
 #Mensagem parte inferior loja
 $msgBottomLoja = New-Object System.Windows.Forms.Label
-$msgBottomLoja.Location =  New-Object System.Drawing.Size(20,130)
+$msgBottomLoja.Location =  New-Object System.Drawing.Size(20,210)
 $msgBottomLoja.AutoSize = $true
 $formLoja.Controls.Add($msgBottomLoja)
 
@@ -196,7 +203,7 @@ $formLoja.Controls.Add($labelIdLoja)
 
 #botão cancelar loja
 $botaoCancelarLoja = New-Object System.Windows.Forms.Button 
-$botaoCancelarLoja.Location = New-Object System.Drawing.Size(130,90)
+$botaoCancelarLoja.Location = New-Object System.Drawing.Size(130,170)
 $botaoCancelarLoja.Size = New-Object System.Drawing.Size(100,20)
 $botaoCancelarLoja.Text = "Fechar"
 $botaoCancelarLoja.Add_Click({$formLoja.Tag = $formLoja.close()}) 
@@ -204,12 +211,12 @@ $formLoja.Controls.Add($botaoCancelarLoja)
 
 #botão ok loja
 $botaoOkLoja = New-Object System.Windows.Forms.Button 
-$botaoOkLoja.Location = New-Object System.Drawing.Size(20,90)
+$botaoOkLoja.Location = New-Object System.Drawing.Size(20,170)
 $botaoOkLoja.Size = New-Object System.Drawing.Size(100,20)
 $botaoOkLoja.Text = "Ok"
 $botaoOkLoja.Add_click({ #essa parte é executada ao clicar no botão ok
-    if($textboxLoja.text -eq ""){
-        $msgBottomLoja.Text = "Loja não adicionada, caixa de texto vazia"
+    if($textboxLoja.text -eq "" -or $listBoxRegiaoLoja.SelectedIndex -eq -1){
+        $msgBottomLoja.Text = "Loja não adicionada. Preencha todos os campos."
     }
     else{
         $cont=0
@@ -226,7 +233,8 @@ $botaoOkLoja.Add_click({ #essa parte é executada ao clicar no botão ok
         else{
             $ultimo=Get-Content .\ixTbLoja.txt #variável recebe conteúdo do texto
             $texto=$textboxLoja.text
-            Add-Content -Value "$ultimo | $texto" -Path .\tbLoja.txt #nova linha adicionada no arquivo
+            $regiaoAdicionada=($listBoxRegiaoLoja.SelectedItem -split " \| ")[0]
+            Add-Content -Value "$ultimo | $regiaoAdicionada | $texto" -Path .\tbLoja.txt #nova linha adicionada no arquivo
 
             [int]$ultimo=$ultimo #variável é convertida para int
             $ultimo++ #e é incrementada
@@ -242,6 +250,14 @@ $botaoOkLoja.Add_click({ #essa parte é executada ao clicar no botão ok
 
 })
 $formLoja.Controls.Add($botaoOkLoja)
+
+#combobox região loja
+$listBoxRegiaoLoja = New-Object System.Windows.Forms.ComboBox
+$listBoxRegiaoLoja.Location = New-Object System.Drawing.Size(20,130)
+$listBoxRegiaoLoja.Size = New-Object System.Drawing.Size(260,20)
+$listBoxRegiaoLoja.Height = 80
+$listBoxRegiaoLoja.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+$formLoja.Controls.Add($listBoxRegiaoLoja)
 
 # Região #################################################################################################################
 
@@ -748,6 +764,12 @@ function popularLojas{ #preenche a listbox de lojas
     $listBoxLojas.items.Clear()
     foreach ($linha in Get-Content .\tbLoja.txt){ [void]$listBoxLojas.Items.Add($linha) } 
 }
+
+function popularRegiaoLoja{ #preenche a listbox região de lojas
+    $listBoxRegiaoLoja.items.Clear()
+    foreach ($linha in Get-Content .\tbRegiao.txt){ [void]$listBoxRegiaoLoja.Items.Add($linha) } 
+}
+
 function popularLojasVendas{ #preenche a listbox de lojas vendas
     $listBoxLojasVendas.items.Clear()
     foreach ($linha in Get-Content .\tbLoja.txt){ [void]$listBoxLojasVendas.Items.Add($linha) } 
@@ -806,5 +828,6 @@ $labelIdDepartamento.Text = "codDpt: " + (Get-Content .\ixTbDepartamento.txt) + 
 $labelIdProduto.Text = "codProd: " + (Get-Content .\ixTbProduto.txt) + ":" #preenche o labelProduto
 popularLojas
 popularLojasVendas
+
 
 [void]$menu.ShowDialog()

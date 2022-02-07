@@ -10,3 +10,4 @@
 0015 | 2022
 0016 | Informática
 0017 | novo01
+0018 | Calçados

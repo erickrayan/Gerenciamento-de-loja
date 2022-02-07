@@ -2,3 +2,5 @@
 0002 | Centro-oeste
 0003 | São paulo
 0004 | Nordeste
+0005 | Sul
+0006 | Sudeste
